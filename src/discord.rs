@@ -1,5 +1,5 @@
 use discord_rich_presence::{
-    activity::{Activity, ActivityType, Assets, Button, Timestamps},
+    activity::{Activity, ActivityType, StatusDisplayType, Assets, Button, Timestamps},
     DiscordIpc, DiscordIpcClient,
 };
 use std::{thread::sleep, time::Duration};
@@ -27,13 +27,7 @@ pub struct Payload {
 impl Discord {
     pub fn new(discord_client_id: String) -> Discord {
         Discord {
-            client: match DiscordIpcClient::new(&discord_client_id) {
-                Ok(client) => client,
-                Err(e) => {
-                    log(&format!("Couldn't connect to Discord: {e}"));
-                    panic!("Couldn't connect to Discord");
-                }
-            },
+            client: DiscordIpcClient::new(&discord_client_id)
         }
     }
 
@@ -126,6 +120,7 @@ impl Discord {
             .details(&payload_data.details)
             .state(&payload_data.state)
             .activity_type(ActivityType::Watching)
+            .status_display_type(StatusDisplayType::Details)
             .assets(
                 Assets::new()
                     .large_image(&img)
